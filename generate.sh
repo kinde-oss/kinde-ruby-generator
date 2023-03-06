@@ -1,5 +1,5 @@
 ARG1=${1:-'kinde-mgmt-api-specs.yaml'}
-ARG2=${2:-'./kinde-sdk-ruby'}
+ARG2=${2:-'./kinde-sdk'}
 
 npm install @openapitools/openapi-generator-cli -g
 
