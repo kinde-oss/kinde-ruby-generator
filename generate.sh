@@ -13,7 +13,6 @@ rm $ARG2/git_push.sh
 rm $ARG2/kinde_sdk.gemspec
 rm $ARG2/.rubocop.yml
 rm $ARG2/Gemfile
-rm $ARG2/spec/spec_helper.rb
 rm $ARG2/.gitlab-ci.yml
 rm $ARG2/.travis.yml
 rm $ARG2/.openapi-generator-ignore
