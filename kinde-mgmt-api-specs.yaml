@@ -240,6 +240,9 @@ paths:
         family_name:
          type: string
          description: User's last name.
+        is_suspended:
+         type: boolean
+         description: Whether the user is currently suspended or not.
    responses:
     '200':
      description: User successfully updated.
@@ -355,7 +358,7 @@ paths:
   get:
    tags:
     - Organizations
-   operationId: getOrgainzations
+   operationId: getOrganizations
    description: |
     Get a list of organizations.
    summary: List Organizations
@@ -436,6 +439,11 @@ paths:
       schema:
        type: string
        nullable: false
+    - name: permissions
+      in: query
+      description: Filter by user permissions
+      schema:
+       type: string
    responses:
     '200':
      description: A succesful response with a list of organization users or an empty list.
@@ -1067,6 +1075,7 @@ components:
     picture:
      type: string
      description: User's profile picture URL.
+     nullable: true
   users:
    type: array
    description: Array of users.
