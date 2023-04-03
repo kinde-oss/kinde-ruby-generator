@@ -344,6 +344,17 @@ paths:
    responses:
     '201':
      description: Organization successfully created.
+     content:
+      application/json:
+       schema:
+        type: object
+        properties:
+         code:
+          type: string
+          description: Response code.
+         message:
+          type: string
+          description: Response message.
     '403':
      description: Invalid credentials.
     '400':
