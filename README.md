@@ -8,9 +8,9 @@ and that's it! Actually, you don't need to pass any arguments at all - default v
 `./kinde-sdk` for `path-to-kinde-api-spec` and `path-to-generated-result` accordingly.
 
 **The slickiest** way to use the generator is to just:
-- copy `generate.sh` and `kinde-mgmt-api-specs.yaml` files into `kinde_api` gem filepath root
+- copy `generate.sh`, `kinde-mgmt-api-specs.yaml` and `files` folder into `kinde_api` gem filepath root
 - run `./generate.sh` with no arguments.
-- after all you'll need to remove `generate.sh` and `kinde-mgmt-api-specs.yaml` files and make a new commit into `kinde_api` repo.
+- after all you'll need to remove `generate.sh`, `kinde-mgmt-api-specs.yaml` and `files`, then add all the new files if any with `git add .` and make a new commit into `kinde_api` repo.
 
 ### Mounting it into kinde_api gem
 Be sure that [SDK path](https://github.com/kinde-oss/kinde-ruby-sdk/blob/main/kinde_api.gemspec#L3) in gemspec of kinde_api gem

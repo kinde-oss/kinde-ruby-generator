@@ -18,7 +18,8 @@ rm $ARG2/.travis.yml
 rm $ARG2/.openapi-generator-ignore
 rm -rf $ARG2/.openapi-generator
 
-sed -i 's/@default_headers = {/@default_headers = {\n        "Accept-Encoding" => "gzip, deflate, br",/' "$ARG2/lib/kinde_sdk/api_client.rb"
+cp ./files/api_client.rb $ARG2/lib/kinde_sdk/api_client.rb
+cp ./files/api_client_spec.rb $ARG2/spec/api_client_spec.rb
 
 ruby -e "p='$ARG2/README.md';d=File.read('$ARG2/README.md');File.write(p, \"## Getting Started#{d.split('Please follow the [installation](#installation) procedure and then run the following code:')[1]}\")"
 
