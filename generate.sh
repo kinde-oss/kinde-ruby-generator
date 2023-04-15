@@ -3,6 +3,8 @@ ARG2=${2:-'./kinde_api'}
 
 npm install @openapitools/openapi-generator-cli -g
 
+wget https://kinde.com/api/kinde-mgmt-api-specs.yaml --output-document=$ARG1
+
 rm -rf $ARG2
 
 npx @openapitools/openapi-generator-cli generate -i $ARG1 -g ruby -o $ARG2 \
@@ -24,3 +26,5 @@ cp ./files/api_client_spec.rb $ARG2/spec/api_client_spec.rb
 ruby -e "p='$ARG2/README.md';d=File.read('$ARG2/README.md');File.write(p, \"## Getting Started#{d.split('Please follow the [installation](#installation) procedure and then run the following code:')[1]}\")"
 
 rubocop -A
+
+rm $ARG1
