@@ -349,9 +349,28 @@ paths:
                     type: string
                     enum: [str, int, bool]
                     description: Value of the feature flag.
+                external_id:
+                  description: The organization's ID.
+                  type: string
+                background_color:
+                  description: The organization's brand settings - background color.
+                  type: string
+                button_color:
+                  description: The organization's brand settings - button color.
+                  type: string
+                button_text_color:
+                  description: The organization's brand settings - button text color.
+                  type: string
+                link_color:
+                  description: The organization's brand settings - link color.
+                  type: string
       responses:
-        '201':
+        '200':
           description: Organization successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/create_organization_response'
         '403':
           description: Invalid credentials.
         '400':
@@ -365,6 +384,53 @@ paths:
                 $ref: '#/components/schemas/error_response'
         '500':
           description: Could not create organization.
+  /api/v1/organizations/{org_code}:
+    patch:
+      tags:
+        - Organizations
+      operationId: updateOrganization
+      description: Update an organization.
+      summary: Update Organization
+      requestBody:
+        description: Organization details.
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: The organization's name.
+                  type: string
+                external_id:
+                  description: The organization's ID.
+                  type: string
+                background_color:
+                  description: The organization's brand settings - background color.
+                  type: string
+                button_color:
+                  description: The organization's brand settings - button color.
+                  type: string
+                button_text_color:
+                  description: The organization's brand settings - button text color.
+                  type: string
+                link_color:
+                  description: The organization's brand settings - link color.
+                  type: string
+      responses:
+        '201':
+          description: Organization successfully updated.
+        '403':
+          description: Invalid credentials.
+        '400':
+          description: Error updating organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
   /api/v1/organizations:
     get:
       tags:
@@ -1193,6 +1259,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/user_identity'
+    create_organization_response:
+      type: object
+      properties:
+        code:
+          description: The organization's code.
+          type: string
     user_identity:
       type: object
       properties:
@@ -1228,10 +1300,16 @@ components:
         first_name:
           type: string
           description: User's first name.
+        picture:
+          type: string
+          description: URL that point's to the user's picture or avatar
     user_profile_v2:
       type: object
       properties:
         id:
+          type: string
+          description: Unique id of the user in Kinde (deprecated).
+        sub:
           type: string
           description: Unique id of the user in Kinde.
         provided_id:
@@ -1253,6 +1331,9 @@ components:
         email:
           type: string
           description: User's email address if available.
+        picture:
+          type: string
+          description: URL that point's to the user's picture or avatar
     organization:
       type: object
       properties:
