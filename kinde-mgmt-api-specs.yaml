@@ -174,6 +174,7 @@ paths:
                       'type':
                         type: string
                         description: The type of identity to create, for e.g. email.
+                        enum: [email]
                       details:
                         type: object
                         description: Additional details required to create the user.
@@ -257,7 +258,7 @@ paths:
     delete:
       tags:
         - Users
-      operationId: deleteuser
+      operationId: deleteUser
       description: |
         Delete a user record.
       summary: Delete User
@@ -391,6 +392,13 @@ paths:
       operationId: updateOrganization
       description: Update an organization.
       summary: Update Organization
+      parameters:
+        - name: org_code
+          in: path
+          description: The identifier for the organization.
+          required: true
+          schema:
+            type: string
       requestBody:
         description: Organization details.
         required: false
@@ -471,11 +479,10 @@ paths:
                 $ref: '#/components/schemas/get_organizations_response'
         '403':
           description: Invalid credentials.
-  /api/v1/organization/users:
+  /api/v1/organizations/{org_code}/users:
     get:
       tags:
         - Organizations
-        - Users
       operationId: GetOrganizationUsers
       description: Get users in an organization.
       summary: List Organization Users
@@ -499,9 +506,10 @@ paths:
           schema:
             type: string
             nullable: true
-        - name: code
-          in: query
+        - name: org_code
+          in: path
           description: The organization's code.
+          required: true
           schema:
             type: string
             nullable: false
@@ -534,14 +542,14 @@ paths:
     post:
       tags:
         - Organizations
-        - Users
       operationId: AddOrganizationUsers
       description: Add existing users to an organization.
-      summary: Assign Users to an Organization
+      summary: Add organization users
       parameters:
-        - name: code
-          in: query
+        - name: org_code
+          in: path
           description: The organization's code.
+          required: true
           schema:
             type: string
             nullable: false
@@ -553,10 +561,24 @@ paths:
               type: object
               properties:
                 users:
-                  description: List of user ids to be added to the organization.
+                  description: Users to be added to the organization.
                   type: array
                   items:
-                    type: string
+                    type: object
+                    properties:
+                      id:
+                        description: The users id.
+                        type: string
+                      roles:
+                        description: Role keys to assign to the user.
+                        type: array
+                        items:
+                          type: string
+                      permissions:
+                        description: Permission keys to assign to the user.
+                        type: array
+                        items:
+                          type: string
       responses:
         '200':
           description: Users successfully added.
@@ -583,14 +605,14 @@ paths:
     patch:
       tags:
         - Organizations
-        - Users
-      operationId: RemoveOrganizationUsers
-      description: Remove existing users from an organization.
-      summary: Remove Users from an Organization
+      operationId: UpdateOrganizationUsers
+      description: Update users that belong to an organization.
+      summary: Update organization users
       parameters:
-        - name: code
-          in: query
+        - name: org_code
+          in: path
           description: The organization's code.
+          required: true
           schema:
             type: string
             nullable: false
@@ -602,10 +624,27 @@ paths:
               type: object
               properties:
                 users:
-                  description: List of user ids to be removed from the organization.
+                  description: Users to be added to the organization.
                   type: array
                   items:
-                    type: string
+                    type: object
+                    properties:
+                      id:
+                        description: The users id.
+                        type: string
+                      operation:
+                        description: Optional operation, set to 'delete' to remove the user from the organization.
+                        type: string
+                      roles:
+                        description: Role keys to assign to the user.
+                        type: array
+                        items:
+                          type: string
+                      permissions:
+                        description: Permission keys to assign to the user.
+                        type: array
+                        items:
+                          type: string
       responses:
         '200':
           description: Users successfully removed.
@@ -618,6 +657,49 @@ paths:
                 $ref: '#/components/schemas/remove_organization_users_response'
         '400':
           description: Error creating user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+        '403':
+          description: Invalid credentials.
+  /api/v1/organizations/{org_code}/users/{user_id}:
+    delete:
+      tags:
+        - Organizations
+      operationId: RemoveOrganizationUser
+      description: Remove user from an organization.
+      summary: Remove organization user
+      parameters:
+        - name: org_code
+          in: path
+          description: The organization's code.
+          required: true
+          schema:
+            type: string
+            nullable: false
+        - name: user_id
+          in: path
+          description: The user's id.
+          required: true
+          schema:
+            type: string
+            nullable: false
+      responses:
+        '200':
+          description: User successfully removed from
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/success_response'
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/success_response'
+        '400':
+          description: Error removing user
           content:
             application/json:
               schema:
@@ -1178,6 +1260,249 @@ paths:
                 $ref: '#/components/schemas/error_response'
         '403':
           description: Invalid credentials.
+  /api/v1/roles:
+    get:
+      tags:
+        - Roles
+      operationId: GetRoles
+      description: |
+        The returned list can be sorted by role name or role ID in ascending or descending order. The number of records to return at a time can also be controlled using the `page_size` query string parameter.
+      summary: List Roles
+      parameters:
+        - name: sort
+          in: query
+          description: Field and order to sort the result by.
+          schema:
+            type: string
+            nullable: true
+            enum: [name_asc, name_desc, id_asc, id_desc]
+        - name: page_size
+          in: query
+          description: Number of results per page. Defaults to 10 if parameter not sent.
+          schema:
+            type: integer
+            nullable: true
+        - name: next_token
+          in: query
+          description: A string to get the next page of results if there are more results.
+          schema:
+            type: string
+            nullable: true
+      responses:
+        '200':
+          description: Roles successfully retrieved.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/success_response'
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Response code.
+                  message:
+                    type: string
+                    description: Response message.
+                  roles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/roles'
+                  next_token:
+                    type: string
+                    description: Pagination token.
+        '403':
+          description: Invalid credentials.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+  /api/v1/role:
+    post:
+      tags:
+        - Roles
+      operationId: CreateRole
+      description: Create role.
+      summary: Create a new role
+      requestBody:
+        description: Role details.
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: The role's name.
+                  type: string
+                description:
+                  description: The role's description.
+                  type: string
+                key:
+                  description: The role identifier to use in code.
+                  type: string
+                is_default_role:
+                  description: Set role as default for new users.
+                  type: boolean
+      responses:
+        '201':
+          description: Role successfully created
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/success_response'
+        '400':
+          description: Invalid request.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+        '403':
+          description: Invalid credentials.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+  /api/v1/roles/{role_id}:
+    patch:
+      tags:
+        - Roles
+      operationId: UpdateRoles
+      description: Update role
+      summary: Update a role
+      parameters:
+        - name: role_id
+          in: path
+          description: The identifier for the role.
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        description: Role details.
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: The role's name.
+                  type: string
+                description:
+                  description: The role's description.
+                  type: string
+                key:
+                  description: The role identifier to use in code.
+                  type: string
+                is_default_role:
+                  description: Set role as default for new users.
+                  type: boolean
+      responses:
+        '201':
+          description: Role successfully updated
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/success_response'
+        '400':
+          description: Invalid request.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+        '403':
+          description: Invalid credentials.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+  /api/v1/applications/{app_id}/auth_redirect_urls:
+    get:
+      tags:
+        - Callbacks
+      operationId: getCallbackURLs
+      description: |
+        Returns an application's redirect callback URLs.
+      summary: List Callback URLs
+      parameters:
+        - name: app_id
+          in: path
+          description: The identifier for the application.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Callback URLs successfully retrieved.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/redirect_callback_urls'
+        '400':
+          description: Invalid request.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+        '403':
+          description: Invalid credentials.
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/error_response'
+    post:
+      tags:
+        - Callbacks
+      operationId: addRedirectCallbackURLs
+      description: |
+        Add additional redirect callback URLs.
+      summary: Add Redirect Callback URLs
+      parameters:
+        - name: app_id
+          in: path
+          description: The identifier for the application.
+          required: true
+          schema:
+            type: string
+        - name: urls
+          in: query
+          description: Array of callback urls.
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Callback URL successfully updated.
+        '403':
+          description: Invalid credentials.
+    put:
+      tags:
+        - Callbacks
+      operationId: replaceRedirectCallbackURLs
+      description: |
+        Replace all redirect callback URLs.
+      summary: Replace redirect callback URLs
+      parameters:
+        - name: app_id
+          in: path
+          description: The identifier for the application.
+          required: true
+          schema:
+            type: string
+        - name: urls
+          in: query
+          description: Array of callback urls.
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Callback URL successfully updated.
+        '403':
+          description: Invalid credentials.
 components:
   schemas:
     success_response:
@@ -1442,6 +1767,57 @@ components:
         result:
           type: string
           description: The result of the api operation.
+    application:
+      type: object
+      properties:
+        app_id:
+          type: string
+        name:
+          type: string
+    get_applications_response:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Response code.
+        message:
+          type: string
+          description: Response message.
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/application'
+        next_token:
+          description: Pagination token.
+          type: string
+    redirect_callback_urls:
+      type: object
+      properties:
+        'redirect_urls':
+          type: array
+          description: An application's redirect URLs.
+          items:
+            type: string
+    get_redirect_callback_urls_response:
+      type: object
+      properties:
+        redirect_urls:
+          description: An application's redirect callback URLs.
+          type: array
+          items:
+            $ref: '#/components/schemas/redirect_callback_urls'
+    roles:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The role identifier to use in code.
+        name:
+          type: string
+          description: The role's name.
+        description:
+          type: string
+          description: The role's description.
   securitySchemes:
     kindeBearerAuth:
       description: |
@@ -1450,4 +1826,3 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      in: header

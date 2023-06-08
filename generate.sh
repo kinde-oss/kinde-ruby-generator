@@ -21,6 +21,7 @@ rm $ARG2/.openapi-generator-ignore
 rm -rf $ARG2/.openapi-generator
 
 cp ./files/api_client.rb $ARG2/lib/kinde_api/api_client.rb
+cp ./files/configuration.rb $ARG2/lib/kinde_api/configuration.rb
 cp ./files/api_client_spec.rb $ARG2/spec/api_client_spec.rb
 
 ruby -e "p='$ARG2/README.md';d=File.read('$ARG2/README.md');File.write(p, \"## Getting Started#{d.split('Please follow the [installation](#installation) procedure and then run the following code:')[1]}\")"
