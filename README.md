@@ -6,11 +6,12 @@ Be sure you have `npm` (nodejs) installed first.
 Generator usage is pretty simple, just call the `./generate <path-to-kinde-api-spec>.yaml <path-to-generated-result>`
 and that's it! Actually, you don't need to pass any arguments at all - default values are `kinde-mgmt-api-specs.yaml` and
 `./kinde_api` for `path-to-kinde-api-spec` and `path-to-generated-result` accordingly.
+`kinde-mgmt-api-specs.yaml` will be automatically downloaded from https://kinde.com/api/kinde-mgmt-api-specs.yaml
 
 **The slickiest** way to use the generator is to just:
-- copy `generate.sh`, `kinde-mgmt-api-specs.yaml` and `files` folder into `kinde_sdk` gem filepath root
+- copy `generate.sh` and `files` folder into `kinde_sdk` gem filepath root
 - run `./generate.sh` with no arguments.
-- after all you'll need to remove `generate.sh`, `kinde-mgmt-api-specs.yaml` and `files`, then add all the new files if any with `git add .` and make a new commit into `kinde_sdk` repo.
+- after all you'll need to remove `generate.sh` and `files`, then add all the new files if any with `git add .` and make a new commit into `kinde_sdk` repo.
 
 ### Mounting into kinde_sdk gem
 Be sure that [SDK path](https://github.com/kinde-oss/kinde-ruby-sdk/blob/main/kinde_sdk.gemspec#L3) in gemspec of kinde_sdk gem
