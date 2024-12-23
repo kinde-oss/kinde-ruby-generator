@@ -54,7 +54,7 @@ Run the following command to generate the SDK:
 ./generate.sh <path-to-kinde-api-spec>.yaml <path-to-generated-result>
 ```
 
-The `<path-to-kinde-api-spec>.yaml` and `path-to-generated-result` are optional arguments whose default values are `kinde-mgmt-api-specs.yaml` and `./kinde_api` respectively. `kinde-mgmt-api-specs.yaml` will be automatically be downloaded from https://kinde.com/api/kinde-mgmt-api-specs.yaml.
+The `<path-to-kinde-api-spec>.yaml` and `path-to-generated-result` are optional arguments whose default values are `kinde-mgmt-api-specs.yaml` and `./kinde_api` respectively. `kinde-mgmt-api-specs.yaml` will be automatically be downloaded from https://api-spec.kinde.com/kinde-combined-api-specs.yaml.
 
 The easiest way to use the generator is to just:
 - Copy `generate.sh` and `files` folder into `kinde_sdk` gem filepath root
@@ -65,10 +65,10 @@ The easiest way to use the generator is to just:
 
 Be sure that [SDK path](https://github.com/kinde-oss/kinde-ruby-sdk/blob/main/kinde_sdk.gemspec#L3) in gemspec of `kinde_sdk` gem is the same as `path-to-generated-result`. If it is different from what it already is (default value is `./kinde-sdk`), the auto deletion from the generation script will not work and you will need to delete it manually first. After the generation step just copy the output folder with the generated result into `kinde_sdk` root path and run `rubocop -A` from `kinde_sdk` directory. The only thing you'll probably want to do manually is just some `kinde-sdk/README.md` edits - you don't need to keep the auto-generated *installation* part at all.
 
-**Note:** The API specifications should always point to Kinde's hosted version: https://kinde.com/api/kinde-mgmt-api-specs.yaml. This is set via the ` -i` option in the [OpenAPI Generator CLI](https://openapi-generator.tech/docs/usage/), for example:
+**Note:** The API specifications should always point to Kinde's hosted version: https://api-spec.kinde.com/kinde-combined-api-specs.yaml. This is set via the ` -i` option in the [OpenAPI Generator CLI](https://openapi-generator.tech/docs/usage/), for example:
 
 ```bash
-openapi-generator-cli generate -i https://kinde.com/api/kinde-mgmt-api-specs.yaml
+openapi-generator-cli generate -i https://api-spec.kinde.com/kinde-combined-api-specs.yaml
 ```
 
 The SDK gets outputted to: `<path-to-generated-result>`, which you can enter via:
