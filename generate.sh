@@ -3,7 +3,7 @@ ARG2=${2:-'./kinde_api'}
 
 npm install @openapitools/openapi-generator-cli -g
 
-wget https://kinde.com/api/kinde-mgmt-api-specs.yaml --output-document=$ARG1
+wget https://api-spec.kinde.com/kinde-combined-api-specs.yaml --output-document=$ARG1
 
 rm -rf $ARG2
 
